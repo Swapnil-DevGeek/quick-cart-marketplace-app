@@ -7,6 +7,7 @@ import { useUser } from "@/contexts/UserContext";
 import { PackageOpen, ChevronDown, ChevronUp, MapPin, Clock, CreditCard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Order } from "@/types";
+import { Link } from "react-router-dom";
 
 export function UserOrders() {
   const { user } = useUser();
@@ -138,8 +139,10 @@ export function UserOrders() {
                     </div>
                     
                     <div className="mt-4">
-                      <Button variant="outline">
-                        Track Order
+                      <Button variant="outline" asChild>
+                        <Link to={`/order-tracking/${order.id}`}>
+                          Track Order
+                        </Link>
                       </Button>
                     </div>
                   </div>

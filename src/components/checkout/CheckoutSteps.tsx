@@ -9,7 +9,7 @@ import { OrderReview } from "./OrderReview";
 import { OrderConfirmation } from "./OrderConfirmation";
 import { useCart } from "@/contexts/CartContext";
 import { useUser } from "@/contexts/UserContext";
-import { PaymentMethod } from "@/types";
+import { PaymentMethod, Order } from "@/types";
 import { toast } from "sonner";
 
 type CheckoutStep = "delivery" | "payment" | "review" | "confirmation";
@@ -30,6 +30,7 @@ export function CheckoutSteps() {
     payment: { method: PaymentMethod.CREDIT_CARD }
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderNumber, setOrderNumber] = useState("");
   
   const { user } = useUser();
   const { items, subtotal, discount, clearCart } = useCart();
@@ -43,6 +44,16 @@ export function CheckoutSteps() {
       ...prev,
       delivery: { addressId }
     }));
+    
+    // Store the selected address for order tracking
+    if (user) {
+      const address = user.addresses.find(addr => addr.id === addressId);
+      if (address) {
+        const addressString = `${address.line1}, ${address.city}, ${address.state} ${address.postalCode}`;
+        localStorage.setItem('lastUsedAddress', addressString);
+      }
+    }
+    
     setCurrentStep("payment");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -59,8 +70,39 @@ export function CheckoutSteps() {
   const handleReviewSubmit = () => {
     setIsSubmitting(true);
     
+    // Create order number
+    const generatedOrderNumber = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
+    setOrderNumber(generatedOrderNumber);
+    
     // Simulate API call to process order
     setTimeout(() => {
+      // Add order to user's order history if user is logged in
+      if (user) {
+        // Find selected address
+        const address = user.addresses.find(addr => addr.id === stepData.delivery.addressId);
+        
+        if (address) {
+          // Create new order
+          const newOrder: Order = {
+            id: generatedOrderNumber,
+            items: [...items],
+            totalAmount: total,
+            address: address,
+            paymentMethod: stepData.payment.method,
+            status: "processing",
+            createdAt: new Date().toISOString(),
+            estimatedDelivery: "Tomorrow"
+          };
+          
+          // Add order to localStorage
+          const userData = JSON.parse(localStorage.getItem("user") || "{}");
+          if (userData && userData.orders) {
+            userData.orders = [newOrder, ...userData.orders];
+            localStorage.setItem("user", JSON.stringify(userData));
+          }
+        }
+      }
+      
       setIsSubmitting(false);
       setCurrentStep("confirmation");
       clearCart();
@@ -158,9 +200,9 @@ export function CheckoutSteps() {
         
         {currentStep === "confirmation" && (
           <OrderConfirmation 
-            orderNumber={`ORD-${Math.floor(100000 + Math.random() * 900000)}`}
+            orderNumber={orderNumber}
             total={total}
-            estimatedDelivery="Tomorrow"
+            estimatedDelivery="25 minutes (quick commerce)"
           />
         )}
       </div>

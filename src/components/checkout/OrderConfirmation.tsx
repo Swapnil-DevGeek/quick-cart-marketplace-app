@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { CheckCircle, ShoppingBag, Truck } from "lucide-react";
+import { useEffect } from "react";
 
 interface OrderConfirmationProps {
   orderNumber: string;
@@ -14,6 +15,62 @@ export function OrderConfirmation({
   total, 
   estimatedDelivery 
 }: OrderConfirmationProps) {
+  // Store order in localStorage for tracking
+  useEffect(() => {
+    const orderData = {
+      orderId: orderNumber,
+      total,
+      estimatedDelivery,
+      createdAt: new Date().toISOString(),
+      currentStep: "order-shipped",
+      shippingAddress: localStorage.getItem('lastUsedAddress') || "123 Main Street, Apt 4B, New York, NY 10001",
+      steps: [
+        {
+          id: "order-placed",
+          title: "Order Placed",
+          description: "Your order has been confirmed and is being processed.",
+          date: new Date().toLocaleString(),
+          icon: "Package",
+          status: "completed" as const,
+        },
+        {
+          id: "order-shipped",
+          title: "Order Shipped",
+          description: "Your order has been shipped and is on its way to you.",
+          date: new Date().toLocaleString(),
+          icon: "Truck",
+          status: "completed" as const,
+        },
+        {
+          id: "in-transit",
+          title: "In Transit",
+          description: "Your package is in transit to the delivery address.",
+          date: new Date().toLocaleString(),
+          icon: "Truck",
+          status: "in-progress" as const,
+        },
+        {
+          id: "out-for-delivery",
+          title: "Out for Delivery",
+          description: "Your package is out for delivery and will arrive today.",
+          date: "Expected in 30 minutes",
+          icon: "Home",
+          status: "pending" as const,
+        },
+        {
+          id: "delivered",
+          title: "Delivered",
+          description: "Your package has been delivered.",
+          date: "Expected today",
+          icon: "CheckCheck",
+          status: "pending" as const,
+        }
+      ]
+    };
+    
+    localStorage.setItem(`order_${orderNumber}`, JSON.stringify(orderData));
+  }, [orderNumber, total, estimatedDelivery]);
+
   return (
     <div className="text-center py-6">
       <div className="mb-6 flex justify-center">
@@ -44,7 +101,7 @@ export function OrderConfirmation({
       
       <div className="flex flex-col md:flex-row gap-4 justify-center">
         <Button asChild size="lg">
-          <Link to="/orders">
+          <Link to={`/order-tracking/${orderNumber}`}>
             <Truck className="mr-2 h-4 w-4" />
             Track Order
           </Link>
