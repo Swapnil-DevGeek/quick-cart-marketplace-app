@@ -25,6 +25,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useCart } from "@/contexts/CartContext";
 import { useUser } from "@/contexts/UserContext";
 import { categories } from "@/data/products";
@@ -99,7 +100,10 @@ export function Header({ onSearch }: HeaderProps) {
         </form>
 
         {/* User Actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          {/* Theme Toggle */}
+          <ThemeToggle />
+          
           {/* Search Icon (Mobile) */}
           <Sheet>
             <SheetTrigger asChild>
@@ -160,10 +164,13 @@ export function Header({ onSearch }: HeaderProps) {
                   <Link to="/account" className="cursor-pointer w-full">My Account</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/orders" className="cursor-pointer w-full">Orders</Link>
+                  <Link to="/account?tab=orders" className="cursor-pointer w-full">Orders</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/addresses" className="cursor-pointer w-full">Addresses</Link>
+                  <Link to="/account?tab=addresses" className="cursor-pointer w-full">Addresses</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/wishlist" className="cursor-pointer w-full">Wishlist</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={logout} className="cursor-pointer">
                   Logout
@@ -213,12 +220,15 @@ export function Header({ onSearch }: HeaderProps) {
                 <Link to="/about" className="text-lg font-medium hover:text-primary">
                   About
                 </Link>
+                <Link to="/wishlist" className="text-lg font-medium hover:text-primary">
+                  Wishlist
+                </Link>
                 {isAuthenticated ? (
                   <>
                     <Link to="/account" className="text-lg font-medium hover:text-primary">
                       My Account
                     </Link>
-                    <Link to="/orders" className="text-lg font-medium hover:text-primary">
+                    <Link to="/account?tab=orders" className="text-lg font-medium hover:text-primary">
                       Orders
                     </Link>
                     <Button variant="ghost" onClick={logout}>
