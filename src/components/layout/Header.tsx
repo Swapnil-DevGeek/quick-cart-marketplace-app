@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { 
@@ -8,7 +7,8 @@ import {
   Heart, 
   Menu, 
   X, 
-  ChevronDown 
+  ChevronDown, 
+  Package 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -50,13 +50,11 @@ export function Header({ onSearch }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
-        {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <ShoppingCart className="h-6 w-6 text-brand-blue" />
           <span className="text-xl font-bold">QuickCart</span>
         </Link>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6">
           <Link to="/" className="text-sm font-medium hover:text-primary">
             Home
@@ -68,6 +66,11 @@ export function Header({ onSearch }: HeaderProps) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="center" className="w-48">
+              <DropdownMenuItem asChild>
+                <Link to="/categories" className="w-full font-medium">
+                  All Categories
+                </Link>
+              </DropdownMenuItem>
               {categories.map((category) => (
                 <DropdownMenuItem key={category.id} asChild>
                   <Link to={`/category/${category.id}`} className="w-full">
@@ -80,12 +83,12 @@ export function Header({ onSearch }: HeaderProps) {
           <Link to="/deals" className="text-sm font-medium hover:text-primary">
             Deals
           </Link>
-          <Link to="/about" className="text-sm font-medium hover:text-primary">
-            About
+          <Link to="/order-tracking" className="text-sm font-medium hover:text-primary flex items-center gap-1">
+            <Package className="h-4 w-4" />
+            Track Order
           </Link>
         </nav>
         
-        {/* Search Bar */}
         <form onSubmit={handleSearch} className="hidden md:flex items-center w-full max-w-sm mx-4">
           <div className="relative w-full">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -99,12 +102,9 @@ export function Header({ onSearch }: HeaderProps) {
           </div>
         </form>
 
-        {/* User Actions */}
         <div className="flex items-center gap-2">
-          {/* Theme Toggle */}
           <ThemeToggle />
           
-          {/* Search Icon (Mobile) */}
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
@@ -129,7 +129,6 @@ export function Header({ onSearch }: HeaderProps) {
             </SheetContent>
           </Sheet>
 
-          {/* Wishlist */}
           <Link to="/wishlist">
             <Button variant="ghost" size="icon">
               <Heart className="h-5 w-5" />
@@ -137,7 +136,6 @@ export function Header({ onSearch }: HeaderProps) {
             </Button>
           </Link>
 
-          {/* Cart */}
           <Link to="/cart" className="relative">
             <Button variant="ghost" size="icon">
               <ShoppingCart className="h-5 w-5" />
@@ -150,7 +148,6 @@ export function Header({ onSearch }: HeaderProps) {
             </Button>
           </Link>
 
-          {/* Account */}
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -165,6 +162,9 @@ export function Header({ onSearch }: HeaderProps) {
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/account?tab=orders" className="cursor-pointer w-full">Orders</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/order-tracking" className="cursor-pointer w-full">Track Order</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/account?tab=addresses" className="cursor-pointer w-full">Addresses</Link>
@@ -185,7 +185,6 @@ export function Header({ onSearch }: HeaderProps) {
             </Link>
           )}
 
-          {/* Mobile Menu */}
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
@@ -204,6 +203,9 @@ export function Header({ onSearch }: HeaderProps) {
                 </Link>
                 <div className="flex flex-col gap-2">
                   <h3 className="text-lg font-medium">Categories</h3>
+                  <Link to="/categories" className="text-sm pl-2 py-1 hover:text-primary font-medium">
+                    All Categories
+                  </Link>
                   {categories.map((category) => (
                     <Link
                       key={category.id}
@@ -217,8 +219,9 @@ export function Header({ onSearch }: HeaderProps) {
                 <Link to="/deals" className="text-lg font-medium hover:text-primary">
                   Deals
                 </Link>
-                <Link to="/about" className="text-lg font-medium hover:text-primary">
-                  About
+                <Link to="/order-tracking" className="text-lg font-medium hover:text-primary flex items-center gap-2">
+                  <Package className="h-5 w-5" />
+                  Track Order
                 </Link>
                 <Link to="/wishlist" className="text-lg font-medium hover:text-primary">
                   Wishlist
