@@ -1,14 +1,15 @@
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { 
   Package, 
   Truck, 
-  MapPin,
-  Check, 
+  Home, 
+  CheckCheck, 
   Clock, 
   Calendar,
-  LucideIcon,
-  Navigation
+  MapPin, 
+  Navigation,
+  LucideIcon
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -42,6 +43,36 @@ export function OrderTracking({
   // Check if this is a quick commerce order (delivery expected in minutes)
   const isQuickCommerce = estimatedDelivery.toLowerCase().includes("minute") || 
                           estimatedDelivery.toLowerCase().includes("today");
+  
+  const [driverPosition, setDriverPosition] = useState({ x: 25, y: 50 });
+  const [destinationPosition] = useState({ x: 75, y: 75 });
+  
+  // Animate the driver position for quick commerce orders
+  useEffect(() => {
+    if (!isQuickCommerce) return;
+    
+    const updateDriverPosition = () => {
+      setDriverPosition(prev => {
+        // Calculate the direction to move towards destination
+        const dx = destinationPosition.x - prev.x;
+        const dy = destinationPosition.y - prev.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        // If driver is close to destination, don't update anymore
+        if (distance < 2) return prev;
+        
+        // Move driver a small step towards destination
+        const step = 0.5; // Small step size
+        const newX = prev.x + (dx / distance) * step;
+        const newY = prev.y + (dy / distance) * step;
+        
+        return { x: newX, y: newY };
+      });
+    };
+    
+    const interval = setInterval(updateDriverPosition, 200);
+    return () => clearInterval(interval);
+  }, [isQuickCommerce, destinationPosition]);
 
   return (
     <div className="space-y-6">
@@ -68,42 +99,62 @@ export function OrderTracking({
       
       <Card>
         <CardContent className="p-6">
-          {/* Map View - Enhanced for Quick Commerce */}
+          {/* Enhanced Map View */}
           <div className="relative h-60 mb-6 rounded-md overflow-hidden bg-muted/50">
             <div className="absolute inset-0">
               {/* Simulated Map View */}
               <div className="h-full w-full bg-gradient-to-br from-primary/5 to-primary/10">
                 {/* Simulated Roads */}
-                <div className="absolute top-1/2 left-0 right-0 h-1 bg-muted-foreground/20"></div>
-                <div className="absolute top-1/4 left-0 right-0 h-1 bg-muted-foreground/20"></div>
-                <div className="absolute top-3/4 left-0 right-0 h-1 bg-muted-foreground/20"></div>
-                <div className="absolute left-1/4 top-0 bottom-0 w-1 bg-muted-foreground/20"></div>
-                <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-muted-foreground/20"></div>
-                <div className="absolute left-3/4 top-0 bottom-0 w-1 bg-muted-foreground/20"></div>
+                <div className="absolute top-1/3 left-0 right-0 h-1.5 bg-muted-foreground/20"></div>
+                <div className="absolute top-2/3 left-0 right-0 h-1.5 bg-muted-foreground/20"></div>
+                <div className="absolute left-1/3 top-0 bottom-0 w-1.5 bg-muted-foreground/20"></div>
+                <div className="absolute left-2/3 top-0 bottom-0 w-1.5 bg-muted-foreground/20"></div>
                 
-                {/* Simulated Location Points */}
-                <div className="absolute top-1/4 left-1/4 h-3 w-3 rounded-full bg-primary"></div>
-                <div className="absolute top-1/2 left-1/2 h-4 w-4 rounded-full bg-primary animate-pulse"></div>
-                <div className="absolute top-3/4 right-1/4 h-3 w-3 rounded-full bg-muted-foreground"></div>
+                {/* Buildings and Landmarks */}
+                <div className="absolute top-1/5 left-1/5 h-8 w-8 rounded-sm bg-muted-foreground/20"></div>
+                <div className="absolute top-2/5 left-3/5 h-8 w-8 rounded-sm bg-muted-foreground/20"></div>
+                <div className="absolute top-3/5 left-1/5 h-6 w-6 rounded-sm bg-muted-foreground/20"></div>
+                <div className="absolute top-1/5 left-4/5 h-10 w-6 rounded-sm bg-muted-foreground/20"></div>
+                
+                {/* Source Location (Store/Warehouse) */}
+                <div className="absolute top-[25%] left-[25%] transform -translate-x-1/2 -translate-y-1/2">
+                  <div className="h-5 w-5 rounded-full bg-primary/30 animate-pulse"></div>
+                  <div className="absolute top-0 left-0 h-5 w-5 rounded-full bg-primary/60 transform scale-50 animate-ping"></div>
+                </div>
+                
+                {/* Destination Location (Customer) */}
+                <div className="absolute top-[75%] left-[75%] transform -translate-x-1/2 -translate-y-1/2">
+                  <MapPin className="h-6 w-6 text-primary" />
+                  <div className="absolute top-0 left-0 h-6 w-6 text-primary transform scale-75 animate-pulse opacity-60"></div>
+                </div>
+                
+                {/* Moving Delivery Vehicle */}
+                {isQuickCommerce && currentStep !== "delivered" && (
+                  <div 
+                    className="absolute transform -translate-x-1/2 -translate-y-1/2"
+                    style={{ 
+                      top: `${driverPosition.y}%`, 
+                      left: `${driverPosition.x}%`,
+                      transition: 'top 0.2s ease-out, left 0.2s ease-out'
+                    }}
+                  >
+                    <div className="bg-primary text-primary-foreground rounded-full p-1.5 shadow-lg">
+                      <Navigation className="h-5 w-5" />
+                    </div>
+                  </div>
+                )}
                 
                 {/* Route Path */}
-                <svg className="absolute inset-0 h-full w-full" viewBox="0 0 400 200" fill="none">
+                <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" fill="none">
                   <path 
-                    d="M100,50 C150,50 150,100 200,100 C250,100 250,150 300,150" 
+                    d="M25,25 C30,35 40,40 50,50 C60,60 70,65 75,75" 
                     stroke="currentColor" 
-                    strokeWidth="2"
-                    strokeDasharray="5,5"
+                    strokeWidth="1.5"
+                    strokeDasharray="3,2"
                     className="text-primary"
                   />
                 </svg>
               </div>
-              
-              {/* Animated Driver Icon (for quick commerce) */}
-              {isQuickCommerce && (
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary text-primary-foreground rounded-full p-2 shadow-lg animate-bounce">
-                  <Navigation className="h-6 w-6" />
-                </div>
-              )}
             </div>
             
             <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
@@ -134,7 +185,8 @@ export function OrderTracking({
                   <div 
                     className={cn(
                       "absolute left-6 top-10 bottom-0 w-0.5 -ml-[1px]",
-                      step.status === "completed" ? "bg-primary" : "bg-muted"
+                      step.status === "completed" ? "bg-primary" : 
+                      step.status === "in-progress" ? "bg-primary/50" : "bg-muted"
                     )}
                   ></div>
                 )}
@@ -147,12 +199,12 @@ export function OrderTracking({
                       step.status === "completed" 
                         ? "bg-primary text-primary-foreground border-primary" 
                         : step.status === "in-progress"
-                          ? "bg-primary/20 text-primary border-primary"
+                          ? "bg-primary/20 text-primary border-primary animate-pulse"
                           : "bg-muted text-muted-foreground border-muted-foreground/30"
                     )}
                   >
                     {step.status === "completed" ? (
-                      <Check className="h-5 w-5" />
+                      <CheckCheck className="h-5 w-5" />
                     ) : (
                       <step.icon className="h-5 w-5" />
                     )}
@@ -177,7 +229,7 @@ export function OrderTracking({
       <div>
         <h3 className="font-semibold mb-3">Need Help?</h3>
         <div className="flex flex-col sm:flex-row gap-3">
-          <Card className="flex-1">
+          <Card className="flex-1 hover:bg-muted/50 transition-colors cursor-pointer">
             <CardContent className="p-4 flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                 <Package className="h-5 w-5 text-primary" />
@@ -189,7 +241,7 @@ export function OrderTracking({
             </CardContent>
           </Card>
           
-          <Card className="flex-1">
+          <Card className="flex-1 hover:bg-muted/50 transition-colors cursor-pointer">
             <CardContent className="p-4 flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                 <Clock className="h-5 w-5 text-primary" />

@@ -1,8 +1,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { CheckCircle, ShoppingBag, Truck } from "lucide-react";
-import { useEffect } from "react";
+import { CheckCircle, ShoppingBag, Truck, Navigation } from "lucide-react";
+import { useEffect, useState } from "react";
+import { OrderTracking } from "@/components/orders/OrderTracking";
 
 interface OrderConfirmationProps {
   orderNumber: string;
@@ -15,13 +16,15 @@ export function OrderConfirmation({
   total, 
   estimatedDelivery 
 }: OrderConfirmationProps) {
-  // Store order in localStorage for tracking
+  const [showTracking, setShowTracking] = useState(false);
+  const [orderData, setOrderData] = useState<any>(null);
+  
+  // Store order in localStorage for tracking and set up initial order data
   useEffect(() => {
     const orderData = {
       orderId: orderNumber,
       total,
       estimatedDelivery,
-      createdAt: new Date().toISOString(),
       currentStep: "order-shipped",
       shippingAddress: localStorage.getItem('lastUsedAddress') || "123 Main Street, Apt 4B, New York, NY 10001",
       steps: [
@@ -69,7 +72,47 @@ export function OrderConfirmation({
     };
     
     localStorage.setItem(`order_${orderNumber}`, JSON.stringify(orderData));
+    setOrderData(orderData);
   }, [orderNumber, total, estimatedDelivery]);
+
+  // Simulate order progress updates
+  useEffect(() => {
+    if (!orderData) return;
+    
+    // Update order status every few seconds to simulate real-time tracking
+    const updateInterval = setInterval(() => {
+      setOrderData(prevData => {
+        if (!prevData) return null;
+        
+        const steps = [...prevData.steps];
+        const inProgressIndex = steps.findIndex(step => step.status === "in-progress");
+        
+        if (inProgressIndex >= 0 && inProgressIndex < steps.length - 1) {
+          // Complete current step
+          steps[inProgressIndex].status = "completed";
+          // Set next step to in-progress
+          steps[inProgressIndex + 1].status = "in-progress";
+          
+          // Update current step identifier
+          const newCurrentStep = steps[inProgressIndex + 1].id;
+          
+          // Save updated status to localStorage
+          const updatedData = {
+            ...prevData,
+            steps,
+            currentStep: newCurrentStep
+          };
+          localStorage.setItem(`order_${orderNumber}`, JSON.stringify(updatedData));
+          
+          return updatedData;
+        }
+        
+        return prevData;
+      });
+    }, 15000); // Update every 15 seconds
+    
+    return () => clearInterval(updateInterval);
+  }, [orderData, orderNumber]);
 
   return (
     <div className="text-center py-6">
@@ -97,6 +140,36 @@ export function OrderConfirmation({
           <p className="text-muted-foreground">Estimated Delivery:</p>
           <p className="font-medium">{estimatedDelivery}</p>
         </div>
+      </div>
+      
+      {/* Order Tracking Section */}
+      <div className="mb-6">
+        <Button 
+          variant="outline" 
+          onClick={() => setShowTracking(!showTracking)}
+          className="mb-4"
+        >
+          {showTracking ? "Hide" : "Show"} Live Tracking
+        </Button>
+        
+        {showTracking && orderData && (
+          <div className="mt-4 border rounded-lg overflow-hidden animate-fade-in">
+            <OrderTracking
+              orderId={orderData.orderId}
+              estimatedDelivery={orderData.estimatedDelivery}
+              currentStep={orderData.currentStep}
+              steps={orderData.steps.map((step: any) => ({
+                ...step,
+                icon: step.icon === "Package" ? Package :
+                      step.icon === "Truck" ? Truck :
+                      step.icon === "Home" ? Home :
+                      step.icon === "CheckCheck" ? CheckCheck :
+                      step.icon === "Clock" ? Clock : Truck
+              }))}
+              shippingAddress={orderData.shippingAddress}
+            />
+          </div>
+        )}
       </div>
       
       <div className="flex flex-col md:flex-row gap-4 justify-center">
