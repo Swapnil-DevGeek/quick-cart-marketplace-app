@@ -86,10 +86,10 @@ export function OrderTracking({
   }, [isQuickCommerce, destinationPosition, viewMode]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6 max-w-4xl mx-auto">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-2 sm:px-0">
         <div>
-          <h2 className="text-xl font-bold mb-1">Order #{orderId}</h2>
+          <h2 className="text-xl font-bold mb-1 font-heading">{orderId ? `Order #${orderId}` : "Order Tracking"}</h2>
           <p className="text-muted-foreground">
             {isQuickCommerce ? (
               <span className="font-medium text-primary">Quick Delivery: {estimatedDelivery}</span>
@@ -109,14 +109,14 @@ export function OrderTracking({
       </div>
       
       {/* Progress bar */}
-      <div className="w-full bg-muted rounded-full h-2.5 mb-4 overflow-hidden">
+      <div className="w-full bg-muted rounded-full h-2.5 mb-4 overflow-hidden px-2 sm:px-0">
         <div 
           className="bg-primary h-2.5 rounded-full transition-all duration-1000 ease-out"
           style={{ width: `${animatedProgress}%` }}
         ></div>
       </div>
       
-      <Card className="overflow-hidden transition-all duration-300">
+      <Card className="overflow-hidden transition-all duration-300 shadow-md">
         <CardContent className={`p-0 ${viewMode === "map" ? "" : "pt-6"}`}>
           {viewMode === "map" && (
             <TrackingMap
@@ -128,7 +128,7 @@ export function OrderTracking({
             />
           )}
           
-          <div className={viewMode === "map" ? "p-6" : ""}>
+          <div className={`${viewMode === "map" ? "p-4 sm:p-6" : ""}`}>
             <TrackingSteps steps={steps} />
           </div>
         </CardContent>

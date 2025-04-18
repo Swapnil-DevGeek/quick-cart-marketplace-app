@@ -15,20 +15,20 @@ export function TrackingSteps({ steps }: TrackingStepsProps) {
   );
   
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {steps.map((step, index) => (
         <div 
           key={step.id} 
           className={cn(
             "relative transition-all duration-300",
-            expandedIndex === index ? "scale-105" : ""
+            expandedIndex === index ? "scale-102 sm:scale-105" : ""
           )}
         >
           {/* Connector Line */}
           {index < steps.length - 1 && (
             <div 
               className={cn(
-                "absolute left-6 top-10 bottom-0 w-0.5 -ml-[1px] transition-colors duration-500",
+                "absolute left-5 sm:left-6 top-10 bottom-0 w-0.5 -ml-[1px] transition-colors duration-500",
                 step.status === "completed" ? "bg-primary" : 
                 step.status === "in-progress" ? "bg-primary/50" : "bg-muted"
               )}
@@ -36,13 +36,13 @@ export function TrackingSteps({ steps }: TrackingStepsProps) {
           )}
           
           <div 
-            className="flex items-start gap-4 cursor-pointer"
+            className="flex items-start gap-3 sm:gap-4 cursor-pointer"
             onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
           >
             {/* Status Icon */}
             <div 
               className={cn(
-                "flex items-center justify-center h-12 w-12 rounded-full border-2 transition-all duration-300",
+                "flex items-center justify-center h-10 w-10 sm:h-12 sm:w-12 rounded-full border-2 transition-all duration-300",
                 step.status === "completed" 
                   ? "bg-primary text-primary-foreground border-primary" 
                   : step.status === "in-progress"
@@ -51,31 +51,31 @@ export function TrackingSteps({ steps }: TrackingStepsProps) {
               )}
             >
               {step.status === "completed" ? (
-                <CheckCheck className="h-5 w-5" />
+                <CheckCheck className="h-4 w-4 sm:h-5 sm:w-5" />
               ) : step.status === "in-progress" ? (
-                <Clock className="h-5 w-5 animate-spin-slow" />
+                <Clock className="h-4 w-4 sm:h-5 sm:w-5 animate-spin-slow" />
               ) : (
-                <step.icon className="h-5 w-5" />
+                <step.icon className="h-4 w-4 sm:h-5 sm:w-5" />
               )}
             </div>
             
             <div className="flex-1">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-1">
                 <h3 className={cn(
-                  "font-semibold transition-colors duration-300",
+                  "font-semibold transition-colors duration-300 text-sm sm:text-base font-heading",
                   step.status === "in-progress" ? "text-primary" : ""
                 )}>
                   {step.title}
                 </h3>
                 <span className={cn(
-                  "text-sm text-muted-foreground",
+                  "text-xs sm:text-sm text-muted-foreground",
                   step.status === "in-progress" ? "font-medium text-primary" : ""
                 )}>
                   {step.date}
                 </span>
               </div>
               <p className={cn(
-                "text-sm text-muted-foreground transition-all duration-300",
+                "text-xs sm:text-sm text-muted-foreground transition-all duration-300",
                 expandedIndex === index ? "text-foreground" : ""
               )}>
                 {step.description}
@@ -83,7 +83,7 @@ export function TrackingSteps({ steps }: TrackingStepsProps) {
               
               {/* Additional details that show when expanded */}
               {expandedIndex === index && (
-                <div className="mt-3 text-sm bg-muted/50 p-3 rounded-md animate-fade-in">
+                <div className="mt-3 text-xs sm:text-sm bg-muted/50 p-2 sm:p-3 rounded-md animate-fade-in">
                   {step.status === "completed" && (
                     <p>This step has been completed successfully.</p>
                   )}

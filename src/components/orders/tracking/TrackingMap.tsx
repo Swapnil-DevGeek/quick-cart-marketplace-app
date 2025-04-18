@@ -2,6 +2,7 @@
 import { MapPin, Navigation, Truck, MapPinOff, Building, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface TrackingMapProps {
   isQuickCommerce: boolean;
@@ -20,6 +21,7 @@ export function TrackingMap({
 }: TrackingMapProps) {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [zoom, setZoom] = useState(1);
+  const isMobile = useIsMobile();
   
   // Simulate map loading
   useEffect(() => {
@@ -35,7 +37,7 @@ export function TrackingMap({
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.2, 0.8));
   
   return (
-    <div className="relative h-60 rounded-t-md overflow-hidden bg-muted/50 transition-all duration-300">
+    <div className="relative h-60 sm:h-72 md:h-80 rounded-t-md overflow-hidden bg-muted/50 transition-all duration-300">
       {/* Loading state */}
       {!mapLoaded && (
         <div className="absolute inset-0 flex items-center justify-center bg-muted">
@@ -154,11 +156,11 @@ export function TrackingMap({
       </div>
       
       {/* Address information */}
-      <div className="relative z-10 p-4 absolute bottom-0 left-0 right-0">
+      <div className="relative z-10 p-2 sm:p-4 absolute bottom-0 left-0 right-0">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <MapPin className="h-5 w-5 text-primary mr-1 flex-shrink-0" />
-            <p className="text-sm font-medium truncate">{shippingAddress}</p>
+            <p className="text-xs sm:text-sm font-medium truncate">{shippingAddress}</p>
           </div>
         </div>
       </div>

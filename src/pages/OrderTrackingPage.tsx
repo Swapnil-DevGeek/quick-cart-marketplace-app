@@ -15,12 +15,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { OrderStep } from "@/types";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function OrderTrackingPage() {
   const { orderId } = useParams();
   const [orderData, setOrderData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<"map" | "list">("map");
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     // Try to load order data from localStorage based on orderId
@@ -173,9 +175,9 @@ export default function OrderTrackingPage() {
 
   return (
     <PageLayout>
-      <div className="container py-8 px-4 animate-fade-in">
+      <div className="container py-4 sm:py-6 md:py-8 px-4 animate-fade-in">
         {/* Breadcrumb */}
-        <Breadcrumb className="mb-6 flex">
+        <Breadcrumb className="mb-4 sm:mb-6 flex overflow-x-auto no-scrollbar text-sm">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>
@@ -185,13 +187,13 @@ export default function OrderTrackingPage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <span>Track Order {orderId && `#${orderId}`}</span>
+            <span className="truncate max-w-[120px] inline-block">Track Order {orderId && `#${orderId}`}</span>
           </BreadcrumbItem>
         </Breadcrumb>
         
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Track Your Order</h1>
-          <p className="text-muted-foreground">
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2 font-heading">Track Your Order</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">
             See the current status of your order and estimated delivery time.
           </p>
         </div>
@@ -203,7 +205,7 @@ export default function OrderTrackingPage() {
             <div className="mb-4 flex justify-end">
               <Button
                 variant="outline"
-                size="sm"
+                size={isMobile ? "sm" : "default"}
                 onClick={toggleViewMode}
                 className="transition-all duration-300"
               >

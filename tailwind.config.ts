@@ -63,6 +63,7 @@ const config = {
       },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
+        heading: ["'Poppins'", ...fontFamily.sans],
       },
       keyframes: {
         "accordion-down": {
@@ -98,12 +99,26 @@ const config = {
         "scale-in": "scale-in 0.3s ease-out",
         "spin-slow": "spin-slow 3s linear infinite",
       },
+      scale: {
+        '102': '1.02',
+      },
     },
   },
   plugins: [
     plugin(function ({ addVariant }) {
       // Fix: Add proper format string with & placeholder for the animate variant
       addVariant('animate', '&:is(.animate)');
+    }),
+    plugin(function({ addUtilities }) {
+      addUtilities({
+        '.no-scrollbar': {
+          '-ms-overflow-style': 'none',
+          'scrollbar-width': 'none',
+          '&::-webkit-scrollbar': {
+            display: 'none',
+          },
+        },
+      });
     }),
   ],
 } satisfies Config
