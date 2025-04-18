@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { CheckCircle, ShoppingBag, Truck, Navigation } from "lucide-react";
+import { CheckCircle, ShoppingBag, Truck, Navigation, Package, Home, CheckCheck, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
 import { OrderTracking } from "@/components/orders/OrderTracking";
 
