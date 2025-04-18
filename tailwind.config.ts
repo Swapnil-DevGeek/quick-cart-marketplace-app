@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss"
 import { fontFamily } from "tailwindcss/defaultTheme"
 import plugin from "tailwindcss/plugin"
@@ -15,7 +14,13 @@ const config = {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: {
+        DEFAULT: '1rem',
+        sm: '2rem',
+        lg: '4rem',
+        xl: '5rem',
+        '2xl': '6rem',
+      },
       screens: {
         "2xl": "1400px",
       },
@@ -62,8 +67,8 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["var(--font-sans)", ...fontFamily.sans],
-        heading: ["'Poppins'", ...fontFamily.sans],
+        sans: ["Inter", ...fontFamily.sans],
+        heading: ["'Inter'", ...fontFamily.sans],
       },
       keyframes: {
         "accordion-down": {
@@ -106,7 +111,6 @@ const config = {
   },
   plugins: [
     plugin(function ({ addVariant }) {
-      // Fix: Add proper format string with & placeholder for the animate variant
       addVariant('animate', '&:is(.animate)');
     }),
     plugin(function({ addUtilities }) {

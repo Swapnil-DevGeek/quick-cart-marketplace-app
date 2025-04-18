@@ -23,13 +23,22 @@ export function ProductGrid({
   columns = {
     sm: 2,
     md: 3,
-    lg: 4,
+    lg: 3,
     xl: 4
   }, 
   className,
   skeletonCount = 8
 }: ProductGridProps) {
-  const gridClassName = `grid grid-cols-${columns.sm || 2} md:grid-cols-${columns.md || 3} lg:grid-cols-${columns.lg || 4} xl:grid-cols-${columns.xl || 4} gap-4 ${className || ""}`;
+  const gridClassName = cn(
+    "grid gap-6",
+    {
+      "grid-cols-1 sm:grid-cols-2": true,
+      [`md:grid-cols-${columns.md}`]: columns.md,
+      [`lg:grid-cols-${columns.lg}`]: columns.lg,
+      [`xl:grid-cols-${columns.xl}`]: columns.xl,
+    },
+    className
+  );
   
   if (loading) {
     return (
@@ -43,8 +52,11 @@ export function ProductGrid({
   
   if (products.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12">
-        <p className="text-lg text-muted-foreground">No products found</p>
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <p className="text-lg text-muted-foreground mb-4">No products found</p>
+        <p className="text-sm text-muted-foreground">
+          Try adjusting your filters or search criteria
+        </p>
       </div>
     );
   }
