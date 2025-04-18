@@ -1,4 +1,3 @@
-
 export interface Product {
   id: string;
   name: string;
@@ -78,4 +77,13 @@ export interface PromoCode {
   expiryDate: string;
   minPurchase?: number;
   maxDiscount?: number;
+}
+
+export interface OrderStep {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  icon: LucideIcon;
+  status: "completed" | "in-progress" | "pending";
 }
