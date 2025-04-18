@@ -14,6 +14,7 @@ interface OrderTrackingProps {
   currentStep: string;
   steps: OrderStep[];
   shippingAddress: string;
+  viewMode?: "map" | "list";
 }
 
 export function OrderTracking({
@@ -22,17 +23,47 @@ export function OrderTracking({
   currentStep,
   steps,
   shippingAddress,
+  viewMode = "map"
 }: OrderTrackingProps) {
   const [driverPosition, setDriverPosition] = useState({ x: 25, y: 50 });
   const [destinationPosition] = useState({ x: 75, y: 75 });
+  const [animatedProgress, setAnimatedProgress] = useState(0);
   
   // Check if this is a quick commerce order
   const isQuickCommerce = estimatedDelivery.toLowerCase().includes("minute") || 
                          estimatedDelivery.toLowerCase().includes("today");
   
+  // Calculate order progress percentage
+  useEffect(() => {
+    const completedSteps = steps.filter(step => step.status === "completed").length;
+    const inProgressStep = steps.find(step => step.status === "in-progress");
+    const totalSteps = steps.length;
+    
+    // Calculate progress including partial credit for in-progress step
+    const completedPercentage = (completedSteps / totalSteps) * 100;
+    const inProgressPercentage = inProgressStep ? (0.5 / totalSteps) * 100 : 0;
+    const targetProgress = completedPercentage + inProgressPercentage;
+    
+    // Animate progress update
+    let start = 0;
+    const animateProgress = () => {
+      start += 1;
+      setAnimatedProgress(prev => {
+        const next = prev + (targetProgress - prev) * 0.1;
+        return Math.min(next, targetProgress);
+      });
+      
+      if (start < 20) {
+        requestAnimationFrame(animateProgress);
+      }
+    };
+    
+    animateProgress();
+  }, [steps]);
+  
   // Animate the driver position for quick commerce orders
   useEffect(() => {
-    if (!isQuickCommerce) return;
+    if (!isQuickCommerce || viewMode !== "map") return;
     
     const updateDriverPosition = () => {
       setDriverPosition(prev => {
@@ -52,7 +83,7 @@ export function OrderTracking({
     
     const interval = setInterval(updateDriverPosition, 200);
     return () => clearInterval(interval);
-  }, [isQuickCommerce, destinationPosition]);
+  }, [isQuickCommerce, destinationPosition, viewMode]);
 
   return (
     <div className="space-y-6">
@@ -77,21 +108,33 @@ export function OrderTracking({
         </Badge>
       </div>
       
-      <Card>
-        <CardContent className="p-6">
-          <TrackingMap
-            isQuickCommerce={isQuickCommerce}
-            currentStep={currentStep}
-            shippingAddress={shippingAddress}
-            driverPosition={driverPosition}
-            destinationPosition={destinationPosition}
-          />
+      {/* Progress bar */}
+      <div className="w-full bg-muted rounded-full h-2.5 mb-4 overflow-hidden">
+        <div 
+          className="bg-primary h-2.5 rounded-full transition-all duration-1000 ease-out"
+          style={{ width: `${animatedProgress}%` }}
+        ></div>
+      </div>
+      
+      <Card className="overflow-hidden transition-all duration-300">
+        <CardContent className={`p-0 ${viewMode === "map" ? "" : "pt-6"}`}>
+          {viewMode === "map" && (
+            <TrackingMap
+              isQuickCommerce={isQuickCommerce}
+              currentStep={currentStep}
+              shippingAddress={shippingAddress}
+              driverPosition={driverPosition}
+              destinationPosition={destinationPosition}
+            />
+          )}
           
-          <TrackingSteps steps={steps} />
+          <div className={viewMode === "map" ? "p-6" : ""}>
+            <TrackingSteps steps={steps} />
+          </div>
         </CardContent>
       </Card>
       
-      <TrackingHelp />
+      <TrackingHelp isQuickCommerce={isQuickCommerce} />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 
 import React from "react";
 import { ProductCard } from "./ProductCard";
+import { ProductCardSkeleton } from "@/components/ui/loading-skeleton";
 import { Product } from "@/types";
 
 interface ProductGridProps {
@@ -13,6 +14,7 @@ interface ProductGridProps {
     xl?: number;
   };
   className?: string;
+  skeletonCount?: number;
 }
 
 export function ProductGrid({ 
@@ -24,15 +26,16 @@ export function ProductGrid({
     lg: 4,
     xl: 4
   }, 
-  className 
+  className,
+  skeletonCount = 8
 }: ProductGridProps) {
   const gridClassName = `grid grid-cols-${columns.sm || 2} md:grid-cols-${columns.md || 3} lg:grid-cols-${columns.lg || 4} xl:grid-cols-${columns.xl || 4} gap-4 ${className || ""}`;
   
   if (loading) {
     return (
       <div className={gridClassName}>
-        {[...Array(8)].map((_, i) => (
-          <div key={i} className="aspect-square rounded-md bg-muted animate-pulse"></div>
+        {Array(skeletonCount).fill(0).map((_, i) => (
+          <ProductCardSkeleton key={i} />
         ))}
       </div>
     );
