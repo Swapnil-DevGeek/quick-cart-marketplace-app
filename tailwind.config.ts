@@ -102,7 +102,8 @@ const config = {
   },
   plugins: [
     plugin(function ({ addVariant }) {
-      addVariant('animate', ['responsive', 'motion-safe', 'motion-reduce'])
+      // Fix: Add proper format string with & placeholder for the animate variant
+      addVariant('animate', '&:is(.animate)');
     }),
   ],
 } satisfies Config
