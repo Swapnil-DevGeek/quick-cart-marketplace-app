@@ -3,6 +3,7 @@ import React from "react";
 import { ProductCard } from "./ProductCard";
 import { ProductCardSkeleton } from "@/components/ui/loading-skeleton";
 import { Product } from "@/types";
+import { cn } from "@/lib/utils";
 
 interface ProductGridProps {
   products: Product[];
