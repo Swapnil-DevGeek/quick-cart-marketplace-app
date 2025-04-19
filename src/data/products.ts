@@ -1,4 +1,3 @@
-
 import { Product, Category } from "@/types";
 
 export const categories: Category[] = [
@@ -41,7 +40,6 @@ export const categories: Category[] = [
 ];
 
 export const products: Product[] = [
-  // Fruits & Vegetables
   {
     id: "p1",
     name: "Organic Bananas",
@@ -131,7 +129,49 @@ export const products: Product[] = [
     tags: ["vegetable", "fresh"],
     relatedProducts: ["p4", "p6", "p2"]
   },
-  // Dairy & Breakfast
+  {
+    id: "p25",
+    name: "Fresh Strawberries",
+    description: "Sweet and juicy organic strawberries. Perfect for snacking, desserts, or smoothies.",
+    price: 4.99,
+    category: "fruits",
+    image: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=1470&auto=format&fit=crop",
+    rating: 4.7,
+    reviewCount: 156,
+    inStock: true,
+    estimatedDelivery: "Today",
+    tags: ["fruit", "fresh", "organic"],
+    relatedProducts: ["p1", "p2", "p3"]
+  },
+  {
+    id: "p26",
+    name: "Organic Blueberries",
+    description: "Plump and sweet organic blueberries. Rich in antioxidants and perfect for any occasion.",
+    price: 5.99,
+    discountPrice: 4.99,
+    category: "fruits",
+    image: "https://images.unsplash.com/photo-1498557850523-fd3d118b962e?q=80&w=1469&auto=format&fit=crop",
+    rating: 4.8,
+    reviewCount: 142,
+    inStock: true,
+    estimatedDelivery: "Today",
+    tags: ["fruit", "organic", "berries"],
+    relatedProducts: ["p25", "p1", "p2"]
+  },
+  {
+    id: "p27",
+    name: "Fresh Bell Peppers",
+    description: "Colorful mix of red, yellow, and green bell peppers. Perfect for salads and cooking.",
+    price: 3.99,
+    category: "fruits",
+    image: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?q=80&w=1470&auto=format&fit=crop",
+    rating: 4.5,
+    reviewCount: 98,
+    inStock: true,
+    estimatedDelivery: "Today",
+    tags: ["vegetable", "fresh", "organic"],
+    relatedProducts: ["p4", "p5", "p3"]
+  },
   {
     id: "p6",
     name: "Whole Milk",
@@ -215,7 +255,34 @@ export const products: Product[] = [
     tags: ["breakfast", "cereal"],
     relatedProducts: ["p7", "p9", "p11"]
   },
-  // Bakery & Snacks
+  {
+    id: "p28",
+    name: "Organic Cottage Cheese",
+    description: "Creamy and protein-rich cottage cheese. Made from organic milk from grass-fed cows.",
+    price: 4.49,
+    category: "dairy",
+    image: "https://images.unsplash.com/photo-1551489186-cf8726f514f8?q=80&w=1470&auto=format&fit=crop",
+    rating: 4.6,
+    reviewCount: 112,
+    inStock: true,
+    estimatedDelivery: "Today",
+    tags: ["dairy", "protein", "organic"],
+    relatedProducts: ["p6", "p7", "p8"]
+  },
+  {
+    id: "p29",
+    name: "Organic Butter",
+    description: "Rich and creamy organic butter. Made from grass-fed cow's milk.",
+    price: 5.99,
+    category: "dairy",
+    image: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?q=80&w=1470&auto=format&fit=crop",
+    rating: 4.7,
+    reviewCount: 134,
+    inStock: true,
+    estimatedDelivery: "Today",
+    tags: ["dairy", "organic"],
+    relatedProducts: ["p6", "p7", "p8"]
+  },
   {
     id: "p11",
     name: "Freshly Baked Bread",
@@ -286,7 +353,35 @@ export const products: Product[] = [
     tags: ["snacks", "nuts", "protein"],
     relatedProducts: ["p15", "p16", "p10"]
   },
-  // Beverages
+  {
+    id: "p30",
+    name: "Artisan Baguette",
+    description: "Traditional French baguette with crispy crust and soft interior. Baked fresh daily.",
+    price: 3.49,
+    category: "bakery",
+    image: "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?q=80&w=1470&auto=format&fit=crop",
+    rating: 4.8,
+    reviewCount: 167,
+    inStock: true,
+    estimatedDelivery: "Today",
+    tags: ["bakery", "bread", "french"],
+    relatedProducts: ["p11", "p12", "p13"]
+  },
+  {
+    id: "p31",
+    name: "Cinnamon Rolls",
+    description: "Freshly baked cinnamon rolls with cream cheese frosting. A perfect breakfast treat.",
+    price: 6.99,
+    discountPrice: 5.99,
+    category: "bakery",
+    image: "https://images.unsplash.com/photo-1509365465985-25d11c17e812?q=80&w=1470&auto=format&fit=crop",
+    rating: 4.9,
+    reviewCount: 189,
+    inStock: true,
+    estimatedDelivery: "Today",
+    tags: ["bakery", "dessert", "breakfast"],
+    relatedProducts: ["p11", "p12", "p13"]
+  },
   {
     id: "p15",
     name: "Orange Juice",
@@ -331,7 +426,34 @@ export const products: Product[] = [
     tags: ["beverage", "tea", "organic"],
     relatedProducts: ["p15", "p16", "p18"]
   },
-  // Meat & Seafood
+  {
+    id: "p32",
+    name: "Cold Brew Coffee",
+    description: "Smooth and rich cold brew coffee. Made with premium coffee beans.",
+    price: 4.99,
+    category: "beverages",
+    image: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?q=80&w=1469&auto=format&fit=crop",
+    rating: 4.7,
+    reviewCount: 156,
+    inStock: true,
+    estimatedDelivery: "Today",
+    tags: ["beverage", "coffee"],
+    relatedProducts: ["p15", "p16", "p17"]
+  },
+  {
+    id: "p33",
+    name: "Kombucha",
+    description: "Naturally fermented tea drink with probiotics. Available in various flavors.",
+    price: 3.99,
+    category: "beverages",
+    image: "https://images.unsplash.com/photo-1595872016924-ba5938edb630?q=80&w=1470&auto=format&fit=crop",
+    rating: 4.5,
+    reviewCount: 123,
+    inStock: true,
+    estimatedDelivery: "Today",
+    tags: ["beverage", "probiotic", "healthy"],
+    relatedProducts: ["p15", "p16", "p17"]
+  },
   {
     id: "p18",
     name: "Grass-Fed Ground Beef",
@@ -386,7 +508,34 @@ export const products: Product[] = [
     tags: ["seafood", "fish", "protein"],
     relatedProducts: ["p18", "p19", "p21"]
   },
-  // Household
+  {
+    id: "p34",
+    name: "Fresh Tuna Steak",
+    description: "Premium grade tuna steaks. Perfect for grilling or searing.",
+    price: 15.99,
+    category: "meats",
+    image: "https://images.unsplash.com/photo-1548164806-9709e4989fc4?q=80&w=1469&auto=format&fit=crop",
+    rating: 4.8,
+    reviewCount: 145,
+    inStock: true,
+    estimatedDelivery: "Today",
+    tags: ["seafood", "fish", "protein"],
+    relatedProducts: ["p18", "p19", "p20"]
+  },
+  {
+    id: "p35",
+    name: "Organic Turkey Breast",
+    description: "Lean and tender turkey breast from free-range turkeys.",
+    price: 8.99,
+    category: "meats",
+    image: "https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?q=80&w=1470&auto=format&fit=crop",
+    rating: 4.6,
+    reviewCount: 118,
+    inStock: true,
+    estimatedDelivery: "Today",
+    tags: ["meat", "poultry", "organic"],
+    relatedProducts: ["p18", "p19", "p20"]
+  },
   {
     id: "p21",
     name: "Dish Soap",
@@ -446,7 +595,6 @@ export const products: Product[] = [
   }
 ];
 
-// Helper functions to get products by category, featured, etc.
 export const getProductsByCategory = (categoryId: string): Product[] => {
   return products.filter(product => product.category === categoryId);
 };
