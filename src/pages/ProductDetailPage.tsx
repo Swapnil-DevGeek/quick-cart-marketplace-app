@@ -7,8 +7,9 @@ import { ProductGrid } from "@/components/products/ProductGrid";
 import { useCart } from "@/contexts/CartContext";
 import { useUser } from "@/contexts/UserContext";
 import { getProductById, getRelatedProducts } from "@/data/products";
-import { Heart, Minus, Plus, ShoppingBag, Star, Truck } from "lucide-react";
+import { Heart, Minus, Plus, ShoppingBag, Star, Truck, Image } from "lucide-react";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProductDetailPage() {
   const { productId } = useParams<{ productId: string }>();
@@ -18,6 +19,8 @@ export default function ProductDetailPage() {
   
   const [quantity, setQuantity] = useState(1);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [imagesLoaded, setImagesLoaded] = useState<Record<number, boolean>>({});
+  const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
   
   // Get product data
   const product = productId ? getProductById(productId) : null;
@@ -51,6 +54,15 @@ export default function ProductDetailPage() {
     ? product.gallery 
     : [product.image];
   
+  const handleImageLoad = (index: number) => {
+    setImagesLoaded(prev => ({ ...prev, [index]: true }));
+  };
+
+  const handleImageError = (index: number) => {
+    setImageErrors(prev => ({ ...prev, [index]: true }));
+    setImagesLoaded(prev => ({ ...prev, [index]: true })); // Consider loading complete
+  };
+  
   return (
     <PageLayout>
       <div className="container py-8 px-4">
@@ -58,12 +70,27 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
           {/* Product images */}
           <div>
-            <div className="aspect-square rounded-lg overflow-hidden bg-muted mb-4">
-              <img
-                src={galleryImages[activeImageIndex]}
-                alt={product.name}
-                className="w-full h-full object-cover"
-              />
+            <div className="aspect-square rounded-lg overflow-hidden bg-muted mb-4 relative">
+              {!imagesLoaded[activeImageIndex] && !imageErrors[activeImageIndex] && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-16 h-16 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+                </div>
+              )}
+              
+              {imageErrors[activeImageIndex] ? (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-muted/20 p-4">
+                  <Image className="h-24 w-24 text-muted-foreground mb-2" />
+                  <p className="text-center text-muted-foreground">Image not available</p>
+                </div>
+              ) : (
+                <img
+                  src={galleryImages[activeImageIndex]}
+                  alt={product.name}
+                  className={`w-full h-full object-cover ${!imagesLoaded[activeImageIndex] ? 'opacity-0' : ''}`}
+                  onLoad={() => handleImageLoad(activeImageIndex)}
+                  onError={() => handleImageError(activeImageIndex)}
+                />
+              )}
             </div>
             
             {galleryImages.length > 1 && (
@@ -75,14 +102,26 @@ export default function ProductDetailPage() {
                       index === activeImageIndex 
                         ? "border-primary" 
                         : "border-transparent"
-                    }`}
+                    } relative`}
                     onClick={() => setActiveImageIndex(index)}
                   >
-                    <img
-                      src={image}
-                      alt={`${product.name} view ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
+                    {!imagesLoaded[index] && !imageErrors[index] && (
+                      <Skeleton className="absolute inset-0" />
+                    )}
+                    
+                    {imageErrors[index] ? (
+                      <div className="absolute inset-0 flex items-center justify-center bg-muted/20">
+                        <Image className="h-6 w-6 text-muted-foreground" />
+                      </div>
+                    ) : (
+                      <img
+                        src={image}
+                        alt={`${product.name} view ${index + 1}`}
+                        className={`w-full h-full object-cover ${!imagesLoaded[index] ? 'opacity-0' : ''}`}
+                        onLoad={() => handleImageLoad(index)}
+                        onError={() => handleImageError(index)}
+                      />
+                    )}
                   </button>
                 ))}
               </div>

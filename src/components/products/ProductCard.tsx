@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Heart, ShoppingCart, Star } from "lucide-react";
+import { Heart, ShoppingCart, Star, Image } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
@@ -26,6 +26,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
   const { addToCart } = useCart();
   const { addToWishlist, user, isAuthenticated } = useUser();
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
   
   const hasDiscount = !!product.discountPrice;
   const discountPercentage = hasDiscount 
@@ -49,6 +50,15 @@ export function ProductCard({ product, className }: ProductCardProps) {
     }
   };
 
+  const handleImageLoad = () => {
+    setIsImageLoaded(true);
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
+    setIsImageLoaded(true); // Consider the loading process complete even if it failed
+  };
+
   return (
     <Card className={cn("h-full overflow-hidden transition-all duration-200 hover:shadow-md group", className)}>
       <Link to={`/product/${product.id}`} className="flex flex-col h-full">
@@ -56,21 +66,29 @@ export function ProductCard({ product, className }: ProductCardProps) {
           {/* Skeleton loader */}
           <div className={cn(
             "absolute inset-0 bg-muted/50",
-            isImageLoaded ? "hidden" : "flex items-center justify-center"
+            (isImageLoaded) ? "hidden" : "flex items-center justify-center"
           )}>
             <div className="w-12 h-12 rounded-full border-4 border-primary border-t-transparent animate-spin" />
           </div>
           
-          {/* Product image */}
-          <img
-            src={product.image}
-            alt={product.name}
-            className={cn(
-              "absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105",
-              !isImageLoaded && "opacity-0"
-            )}
-            onLoad={() => setIsImageLoaded(true)}
-          />
+          {/* Product image or fallback */}
+          {imageError ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-muted/20">
+              <Image className="h-16 w-16 text-muted-foreground" />
+              <span className="sr-only">Image not available</span>
+            </div>
+          ) : (
+            <img
+              src={product.image}
+              alt={product.name}
+              className={cn(
+                "absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105",
+                !isImageLoaded && "opacity-0"
+              )}
+              onLoad={handleImageLoad}
+              onError={handleImageError}
+            />
+          )}
           
           {/* Discount badge */}
           {hasDiscount && (
